@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+    <script>
+        // Fetch orders based on the userId from the session or URL
+        async function fetchOrders(userId) {
+            try {
+                const response = await fetch(`http://localhost:5000/orders?userId=${userId}`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+
+                const data = await response.json();
+
+                if (data.orders && data.orders.length > 0) {
+                    displayOrders(data.orders);
+                } else {
+                    document.getElementById('orders').innerHTML = 'No orders found.';
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        }
+
+        // Display orders in the DOM
+        function displayOrders(orders) {
+            const ordersContainer = document.getElementById('orders');
+            ordersContainer.innerHTML = ''; // Clear any existing content
+
+            orders.forEach(order => {
+                const orderElem = document.createElement('div');
+                orderElem.classList.add('order');
+                let orderHTML = `
+                    <h3>Order #${order.id}</h3>
+                    <p>Total Amount: Rs ${order.total_amount}</p>
+                    <p>Order Date: ${order.order_date}</p>
+                    <h4>Items:</h4>
+                    <ul>
+                `;
+
+                order.items.forEach(item => {
+                    orderHTML += `
+                        <li>
+                            ${item.product_name} - Rs ${item.price} x ${item.quantity}
+                        </li>
+                    `;
+                });
+
+                orderHTML += `</ul><hr>`;
+                orderElem.innerHTML = orderHTML;
+                ordersContainer.appendChild(orderElem);
+            });
+        }
+
+        // On window load, try to fetch orders based on userId
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+
+            if (!userId) {
+                window.location.href = 'login.html'; // Redirect to login if userId is not found
+            } else {
+                fetchOrders(userId); // Fetch orders if user is logged in
+            }
+        };
+    </script>
+</head>
+<body>
+    <h1>My Orders</h1>
+    <div id="orders">
+        <!-- Orders will be displayed here -->
+    </div>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> all products</title>
+    <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="header">
+    <div class="container">
+    <div class="navbar">
+        <div class="logo">
+            <img src="images/images.png" width="140px">
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">HOME</li></a>
+                <li><a href="products.html">PRODUCTS</li></a>
+                <li><a href="">ABOUT</a></li>
+                <li><a href="">CONTACT</a></li>
+                <li><a href="account.html">ACCOUNT</a></li>
+
+            </ul>
+        </nav>
+        <a href="cart.html"><img src="images/cart.png" width="30px" height="30px"></a>
+    </div>
+</div>
+
+</div>
+</div>
+</div>
+
+
+    <div class="small-container single-product">
+        <div class="row">
+            <div class="col-2">
+                <img id="product-image" src="" width="100%">
+            </div>
+            <div class="col-2">
+                <p id="product-category">Category / Item</p>
+                <h1 id="product-name"></h1>
+                <div class="price">
+                    <h4 id="product-price"></h4>
+                </div>
+                <select id="product-size">
+                    <option>Select Size</option>
+                    <option>XXL</option>
+                    <option>XL</option>
+                    <option>Large</option>
+                    <option>Medium</option>
+                    <option>Small</option>
+                </select>
+                <input type="number" id="product-quantity" value="1" min="1">
+                <button id="add-to-cart-btn" class="btn">Add to Cart</button>
+
+                <h3>Product Details</h3>
+                <small id="product-description" style="text-align:center;"></small>
+            </div>
+        </div>
+    </div>
+<!-- Pop-up box for messages -->
+<div id="popup" class="popup">
+    <p id="popup-message"></p>
+    <button id="popup-close-btn">Close</button>
+</div>
+
+    <!------title----->
+<div class="small-container">
+    <div class="row row-2">
+        <h2>Related Products</h2>
+        <p>view more</p>
+    </div>
+</div>
+
+<div class="small-container">
+    <div class="row">
+        <div class="col-4">
+            <img src="images/product1.jpg">
+            <h4>zara dress</h4>
+            <p>Rs 5000</p>
+        </div>
+
+        <div class="col-4">
+            <img src="images/product2.jpg">
+            <h4>mango shoes</h4>
+            <p>Rs 8000</p>
+        </div>
+
+        <div class="col-4">
+            <img src="images/product3.jpg">
+            <h4>park evenue red suit</h4>
+            <p>Rs 16000</p>
+        </div>
+
+        <div class="col-4">
+            <img src="images/product4.jpg">
+            <h4>vinatge prada glasses</h4>
+            <p>Rs 5600</p>
+        </div>
+
+    </div>
+</div>
+
+
+
+    <script src="products.js"></script>
+    <script src="product.js"></script>
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-col-1">
+                    <h3>project by</h3>
+                    <p> eeman arham arshiya daniya</p>
+                </div>
+                <div class="footer-col-2">
+                    <img src="images/images.png">
+                    <p>Discover the art of fine living with our handpicked selection of exclusive, elegant pieces</p>
+                </div>
+                <div class="footer-col-3">
+                    <h3>useful links</h3>
+                    <ul>
+                        <li>coupons</li>
+                        <li>blog post</li>
+                        <li>return policy</li>
+                        <li>join affiliate</li>
+                    </ul>
+                </div>
+                <div class="footer-col-4">
+                    <h3>follow us</h3>
+                    <ul>
+                        <li>instagram</li>
+                        <li>youtube</li>
+                        <li>facebook</li>
+                        <li>twitter</li>
+                    </ul>
+                </div>
+            </div>
+            <hr>
+            <p class="copyright" style="text-align: center;">Copyright<i class="far fa-copyright"></i></p>
+    
+        </div>
+    </div>
+    <div id="cart-modal" class="modal">
+        <div class="modal-content">
+            <p>Added to cart successfully!</p>
+            <button id="close-modal">Close</button>
+        </div>
+    </div>
+    
+    <style>
+        /* Modal Styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .modal-content button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: brown;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content button:hover {
+            background-color: burlywood;
+        }
+    </style>
+    
+    </body>
+    </html>
