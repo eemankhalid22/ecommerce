@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        .orders-header {
+            color: burlywood;
+            font-size: 2.5em;
+            font-weight: 700;
+            margin: 40px 0 30px 0;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+        .orders-container {
+            max-width: 900px;
+            margin: 0 auto 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 0 20px 0px rgba(0,0,0,0.08);
+            padding: 40px 30px 30px 30px;
+        }
+        .order {
+            border: 2px solid burlywood;
+            background: #f9f6f2;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            padding: 24px 28px 18px 28px;
+            box-shadow: 0 2px 8px rgba(107,32,32,0.07);
+        }
+        .order h3 {
+            color: #563434;
+            margin-bottom: 0.5em;
+            font-size: 1.3em;
+        }
+        .order p {
+            color: #563434;
+            margin: 0 0 0.5em 0;
+            font-size: 1em;
+        }
+        .order ul {
+            padding-left: 1.5em;
+            margin: 0.5em 0 0 0;
+        }
+        .order ul li {
+            color: #6b2020;
+            font-size: 1em;
+            margin-bottom: 0.3em;
+        }
+        @media (max-width: 600px) {
+            .orders-container { padding: 10px; }
+            .order { padding: 10px; }
+        }
+    </style>
+    <script>
+        async function fetchOrders(userId) {
+            try {
+                const response = await fetch(`http://localhost:5000/orders?userId=${userId}`);
+                if (!response.ok) {
+                    document.getElementById('orders').innerHTML = 'Error fetching orders.';
+                    return;
+                }
+                const data = await response.json();
+                if (data.orders && data.orders.length > 0) {
+                    displayOrders(data.orders);
+                } else {
+                    document.getElementById('orders').innerHTML = 'No orders found.';
+                }
+            } catch (error) {
+                document.getElementById('orders').innerHTML = 'Error fetching orders.';
+            }
+        }
+        function displayOrders(orders) {
+            const ordersContainer = document.getElementById('orders');
+            ordersContainer.innerHTML = '';
+            orders.forEach(order => {
+                const orderElem = document.createElement('div');
+                orderElem.classList.add('order');
+                let orderHTML = `
+                    <h3>Order #${order.id}</h3>
+                    <p>Total: Rs ${order.total_amount}</p>
+                    <p>Date: ${order.order_date}</p>
+                    <h4>Items:</h4>
+                    <ul>
+                `;
+                order.items.forEach(item => {
+                    orderHTML += `<li>${item.product_name} - Rs ${item.price} x ${item.quantity}</li>`;
+                });
+                orderHTML += '</ul>';
+                orderElem.innerHTML = orderHTML;
+                ordersContainer.appendChild(orderElem);
+            });
+        }
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get('userId');
+            if (!userId) {
+                window.location.href = 'account.html';
+            } else {
+                fetchOrders(userId);
+            }
+        };
+    </script>
+</head>
+<body style="background: burlywood;">
+    <div class="header">
+        <div class="container">
+            <div class="navbar">
+                <div class="logo">
+                    <img src="images/images.png" width="140px" alt="Logo">
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">HOME</a></li>
+                        <li><a href="products.html">PRODUCTS</a></li>
+                        <li><a href="">ABOUT</a></li>
+                        <li><a href="">CONTACT</a></li>
+                        <li><a href="account.html">ACCOUNT</a></li>
+                    </ul>
+                </nav>
+                <a href="cart.html"><img src="images/cart.png" width="30px" height="30px" alt="Cart"></a>
+            </div>
+        </div>
+    </div>
+    <div class="orders-header">My Orders</div>
+    <div class="orders-container">
+        <div id="orders">Loading...</div>
+    </div>
+    <div class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="footer-col-1">
+                    <h3>project by</h3>
+                    <p> eeman </p>
+                </div>
+                <div class="footer-col-2">
+                    <img src="images/images.png">
+                    <p>Discover the art of fine living with our handpicked selection of exclusive, elegant pieces</p>
+                </div>
+                <div class="footer-col-3">
+                    <h3>useful links</h3>
+                    <ul>
+                        <li>coupons</li>
+                        <li>blog post</li>
+                        <li>return policy</li>
+                        <li>join affiliate</li>
+                    </ul>
+                </div>
+                <div class="footer-col-4">
+                    <h3>follow us</h3>
+                    <ul>
+                        <li>instagram</li>
+                        <li>youtube</li>
+                        <li>facebook</li>
+                        <li>twitter</li>
+                    </ul>
+                </div>
+            </div>
+                    <ul>
+                        <li><a href="index.html">HOME</a></li>
+                        <li><a href="products.html">PRODUCTS</a></li>
+                        <li><a href="about.html">ABOUT</a></li>
+                        <li><a href="contact.html">CONTACT</a></li>
+                        <li><a href="account.html">ACCOUNT</a></li>
+                    </ul>

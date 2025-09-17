@@ -1,8 +1,4 @@
--- Create Database
-CREATE DATABASE ecommerce;
 
--- Switch to the database
-USE ecommerce;
 
 -- Create Users Table
 CREATE TABLE users (
@@ -30,6 +26,6 @@ CREATE TABLE order_items (
   price DECIMAL(10, 2),
   FOREIGN KEY (order_id) REFERENCES orders(id)
 );
-INSERT INTO users (username, email, password)
-VALUES ('1','eeman', 'eemankhalid22@gmail.com', 'eeman');
+INSERT INTO users (name, email, password)
+VALUES ('eeman', 'eemankhalid22@gmail.com', 'eeman');
 select * from order_items;

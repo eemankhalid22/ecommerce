@@ -40,21 +40,20 @@
             <div class="col-2">
                 <div class="form-container">
                     <div class="form-btn">
-                        <span onclick="login()">login</span>
-                        <span onclick="regsister()">register</span>
+                        <span onclick="showLogin()">login</span>
+                        <span onclick="showRegister()">register</span>
                         <hr id="indicator">
                     </div>
 
-                    <form id="loginform" onsubmit="handleLogin(event)">
-                        <input type="text" id="loginUsername" placeholder="Username">
-                        <input type="password" id="loginPassword" placeholder="Password">
+                    <form id="loginform" onsubmit="handleLogin(event)" style="left:0;">
+                        <input type="text" id="loginUsername" placeholder="Username" autocomplete="username">
+                        <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
                         <button type="submit" class="btn">Login</button>
                     </form>
-                    
-                    <form id="regform" onsubmit="handleRegister(event)">
-                        <input type="text" id="registerUsername" placeholder="Username">
-                        <input type="email" id="registerEmail" placeholder="Email">
-                        <input type="password" id="registerPassword" placeholder="Password">
+                    <form id="regform" onsubmit="handleRegister(event)" style="left:300px;">
+                        <input type="text" id="registerUsername" placeholder="Username" autocomplete="username">
+                        <input type="email" id="registerEmail" placeholder="Email" autocomplete="email">
+                        <input type="password" id="registerPassword" placeholder="Password" autocomplete="new-password">
                         <button type="submit" class="btn">Register</button>
                     </form>
                     
@@ -68,66 +67,128 @@
 <!----footer-->
 <div class="footer">
     <div class="container">
-        <div class="row">
-            <div class="footer-col-1">
-                <h3>project by</h3>
-                <p> eeman arham arshiya daniya</p>
+            <div class="row">
+                <div class="footer-col-1">
+                    <h3>project by</h3>
+                    <p> eeman </p>
+                </div>
+                <div class="footer-col-2">
+                    <img src="images/images.png">
+                    <p>Discover the art of fine living with our handpicked selection of exclusive, elegant pieces</p>
+                </div>
+                <div class="footer-col-3">
+                    <h3>useful links</h3>
+                    <ul>
+                        <li>coupons</li>
+                        <li>blog post</li>
+                        <li>return policy</li>
+                        <li>join affiliate</li>
+                    </ul>
+                </div>
+                <div class="footer-col-4">
+                    <h3>follow us</h3>
+                    <ul>
+                        <li>instagram</li>
+                        <li>youtube</li>
+                        <li>facebook</li>
+                        <li>twitter</li>
+                    </ul>
+                </div>
             </div>
-            <div class="footer-col-2">
-                <img src="images/images.png">
-                <p>Discover the art of fine living with our handpicked selection of exclusive, elegant pieces</p>
-            </div>
-            <div class="footer-col-3">
-                <h3>useful links</h3>
-                <ul>
-                    <li>coupons</li>
-                    <li>blog post</li>
-                    <li>return policy</li>
-                    <li>join affiliate</li>
+            <hr>
+                    <li><a href="index.html">HOME</a></li>
+                    <li><a href="products.html">PRODUCTS</a></li>
+                    <li><a href="about.html">ABOUT</a></li>
+                    <li><a href="contact.html">CONTACT</a></li>
+                    <li><a href="account.html">ACCOUNT</a></li>
                 </ul>
-            </div>
-            <div class="footer-col-4">
-                <h3>follow us</h3>
-                <ul>
-                    <li>instagram</li>
-                    <li>youtube</li>
-                    <li>facebook</li>
-                    <li>twitter</li>
-                </ul>
-            </div>
-        </div>
-        <hr>
-        <p class="copyright" style="text-align: center;">Copyright<i class="far fa-copyright"></i></p>
-
-    </div>
-</div>
-
-
+<style>
+    /* Hide/show forms for toggling */
+    #loginform, #regform { transition: all 0.3s; }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0; top: 0; width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.4);
+        justify-content: center; align-items: center;
+    }
+    .modal-content {
+        background: #fff;
+        padding: 2em 2em 1em 2em;
+        border-radius: 8px;
+        min-width: 250px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    #close-modal {
+        margin-top: 1em;
+        padding: 0.5em 2em;
+        background: #563434;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
 <script>
-var loginform=document.getElementById("loginform");
-var regform=document.getElementById("regform");
-var indicator=document.getElementById("indicator");
- 
-function register(){
-    regform.style.transform="translateX(0px)";
-    loginform.style.transform="translateX(0px)";
-    indicator.style.transform="translateX(100px)";
-
- }
-
- function login(){
-    regform.style.transform="translateX(300px)";
-    loginform.style.transform="translateX(300px)";
-    indicator.style.transform="translateX(0px)";
-
-
- }
+document.addEventListener('DOMContentLoaded', function() {
+    const loginform = document.getElementById("loginform");
+    const regform = document.getElementById("regform");
+    const indicator = document.getElementById("indicator");
+    const closeModalBtn = document.getElementById('close-modal');
+    function showLogin() {
+        loginform.style.left = "0";
+        regform.style.left = "300px";
+        indicator.style.transform = "translateX(0px)";
+    }
+    function showRegister() {
+        loginform.style.left = "-300px";
+        regform.style.left = "0";
+        indicator.style.transform = "translateX(100px)";
+    }
+    window.showLogin = showLogin;
+    window.showRegister = showRegister;
+    showLogin();
+    if (closeModalBtn) {
+        closeModalBtn.onclick = function() {
+            document.getElementById('modal').style.display = 'none';
+        };
+    }
+});
 </script>
 <script src="account.js"></script>
-<!-- Modal for success message -->
+<!-- Modal for feedback message -->
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 0; top: 0; width: 100vw; height: 100vh;
+        background: rgba(0,0,0,0.4);
+        justify-content: center; align-items: center;
+    }
+    .modal-content {
+        background: #fff;
+        padding: 2em 2em 1em 2em;
+        border-radius: 8px;
+        min-width: 250px;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    #close-modal {
+        margin-top: 1em;
+        padding: 0.5em 2em;
+        background: #563434;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+</style>
 <div id="modal" class="modal">
     <div class="modal-content">
-        <span id="modal-message"></span>
+        <span id="modal-message"></span><br>
         <button id="close-modal">Close</button>
     </div>
 </div>

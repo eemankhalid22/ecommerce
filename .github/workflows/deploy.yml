@@ -1,0 +1,109 @@
+name: Deploy to ECS (ap-south-1)
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: ap-south-1
+  ECR_REPOSITORY: ecommerce
+  ECS_CLUSTER: ecommerce-cluster
+  ECS_SERVICE: ecommerce-service
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Derive variables
+        id: vars
+        run: |
+          echo "TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_OUTPUT
+          echo "REGISTRY=$ACCOUNT_ID.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com" >> $GITHUB_OUTPUT
+
+      - name: Build and push image
+        run: |
+          IMAGE="${{ steps.vars.outputs.REGISTRY }}/${{ env.ECR_REPOSITORY }}:${{ steps.vars.outputs.TAG }}"
+          docker build -t "$IMAGE" .
+          docker push "$IMAGE"
+          echo "IMAGE=$IMAGE" >> $GITHUB_ENV
+
+      - name: Get current task definition ARN
+        id: current_td
+        run: |
+          TD_ARN=$(aws ecs describe-services \
+            --cluster "${{ env.ECS_CLUSTER }}" \
+            --services "${{ env.ECS_SERVICE }}" \
+            --query 'services[0].taskDefinition' --output text)
+          echo "TASK_DEF_ARN=$TD_ARN" >> $GITHUB_OUTPUT
+
+      - name: Download current task definition
+        run: |
+          aws ecs describe-task-definition \
+            --task-definition "${{ steps.current_td.outputs.TASK_DEF_ARN }}" \
+            --query 'taskDefinition' > current-task-def.json
+
+      - name: Render new task definition with updated image
+        run: |
+          # Update image on first container definition (common case)
+          jq '.containerDefinitions[0].image = env.IMAGE'
+            current-task-def.json > tmp.json
+          # Keep only fields allowed by register-task-definition
+          jq '{
+                family,
+                taskRoleArn,
+                executionRoleArn,
+                networkMode,
+                containerDefinitions,
+                volumes,
+                placementConstraints,
+                requiresCompatibilities,
+                cpu,
+                memory,
+                pidMode,
+                ipcMode,
+                proxyConfiguration,
+                inferenceAccelerators,
+                ephemeralStorage
+              }' tmp.json > new-task-def.json
+
+      - name: Register new task definition
+        id: register
+        run: |
+          NEW_TD_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://new-task-def.json \
+            --query 'taskDefinition.taskDefinitionArn' --output text)
+          echo "NEW_TD_ARN=$NEW_TD_ARN" >> $GITHUB_OUTPUT
+
+      - name: Update ECS service
+        run: |
+          aws ecs update-service \
+            --cluster "${{ env.ECS_CLUSTER }}" \
+            --service "${{ env.ECS_SERVICE }}" \
+            --task-definition "${{ steps.register.outputs.NEW_TD_ARN }}" \
+            --force-new-deployment > /dev/null
+
+      - name: Wait for service stability
+        run: |
+          aws ecs wait services-stable \
+            --cluster "${{ env.ECS_CLUSTER }}" \
+            --services "${{ env.ECS_SERVICE }}"
+
+

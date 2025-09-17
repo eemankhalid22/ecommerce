@@ -84,45 +84,42 @@ document.querySelector('#cart-table').addEventListener('click', function(e) {
 window.onload = displayCart;
 
 // Handle "Place Order" button click
-document.getElementById('placeOrderBtn').addEventListener('click', function() {
-    const user = JSON.parse(localStorage.getItem('user'));  // Get user from localStorage
-    if (!user) {
-        // User is not logged in, redirect to the login page
-        alert("Please log in or register to place an order.");
-        window.location.href = 'account.html';  // Redirect to the account page
-        return;
-    }
 
-    // Proceed to place the order for the logged-in user
-    const orderDetails = {
-        userId: user.id,  // Assuming 'user' object has 'id'
-        items: cart,
-        totalAmount: document.getElementById('total').innerText.replace('Rs ', '')
+
+// Custom popup for login/register first
+function showLoginPopup() {
+    // Create overlay
+    let overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.background = 'rgba(0,0,0,0.4)';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.zIndex = 9999;
+
+    // Create popup
+    let popup = document.createElement('div');
+    popup.style.background = '#fff';
+    popup.style.padding = '32px 40px';
+    popup.style.borderRadius = '12px';
+    popup.style.boxShadow = '0 2px 16px rgba(0,0,0,0.2)';
+    popup.style.textAlign = 'center';
+    popup.innerHTML = `<div style="font-size:1.3em;margin-bottom:18px;">Login/Register first</div><button id="popupLoginBtn" style="padding:8px 24px;background:burlywood;color:#fff;border:none;border-radius:6px;font-size:1em;cursor:pointer;">Go to Account</button>`;
+
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+
+    document.getElementById('popupLoginBtn').onclick = function() {
+        window.location.href = 'account.html';
     };
+}
 
-    // Send order details to the server
-    fetch('http://localhost:5000/place-order', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderDetails)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.status === 'success') {
-            alert('Order placed successfully!');
-            // Clear the cart and redirect to the orders page
-            localStorage.removeItem('cart');
-            window.location.href = `orders.html?userId=${user.id}`;
-        } else {
-            alert('Error placing order');
-        }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred. Please try again.');
-    });
+document.getElementById('placeOrderBtn').addEventListener('click', function() {
+    const user = JSON.parse(localStorage.getItem('user'));
+    showLoginPopup();
 });
 
-localStorage.clear();

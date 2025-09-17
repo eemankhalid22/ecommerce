@@ -5,7 +5,7 @@ const orderDetails = {
     price: 19.99
 };
 
-fetch('http://localhost:3001/add-order', {
+fetch('http://localhost:5000/place-order', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(orderDetails)

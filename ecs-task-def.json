@@ -1,0 +1,35 @@
+{
+  "family": "ecommerce-task",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "${EXECUTION_ROLE_ARN}",
+  "taskRoleArn": "${TASK_ROLE_ARN}",
+  "containerDefinitions": [
+    {
+      "name": "app",
+      "image": "${ACCOUNT_ID}.dkr.ecr.ap-south-1.amazonaws.com/ecommerce:latest",
+      "portMappings": [ { "containerPort": 5000, "protocol": "tcp" } ],
+      "essential": true,
+      "environment": [
+        { "name": "PORT", "value": "5000" },
+        { "name": "DB_HOST", "value": "ecommerce-db.chyugim0qixe.ap-south-1.rds.amazonaws.com" },
+        { "name": "DB_USER", "value": "root" },
+        { "name": "DB_PASS", "value": "CHANGE_ME" },
+        { "name": "DB_NAME", "value": "ecommerce" },
+        { "name": "SESSION_SECRET", "value": "CHANGE_ME" }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ecommerce",
+          "awslogs-region": "ap-south-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}
+
+
