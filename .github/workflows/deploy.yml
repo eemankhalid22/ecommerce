@@ -62,9 +62,8 @@ jobs:
 
       - name: Render new task definition with updated image
         run: |
-          # Update image on first container definition (common case)
-          jq '.containerDefinitions[0].image = env.IMAGE'
-            current-task-def.json > tmp.json
+          # Update image on first container definition
+          jq --arg IMAGE "$IMAGE" '.containerDefinitions[0].image = $IMAGE' current-task-def.json > tmp.json
           # Keep only fields allowed by register-task-definition
           jq '{
                 family,
@@ -105,5 +104,3 @@ jobs:
           aws ecs wait services-stable \
             --cluster "${{ env.ECS_CLUSTER }}" \
             --services "${{ env.ECS_SERVICE }}"
-
-
